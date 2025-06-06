@@ -1,0 +1,88 @@
+{% extends "common/base.html" %}
+{% load food_extras %}
+
+{% block title %}Food Search - Calories Tracker{% endblock %}
+
+{% block content %}
+<main>
+    <form method="get" class="mb-4">
+        <h1 class="mb-3">Search for Food</h1>
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if error_message %}
+        <div class="alert alert-warning">
+            {{ error_message }}
+            {% if debug_info %}
+                <hr>
+                <small class="text-muted">Debug Info: {{ debug_info }}</small>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if foods %}
+        <h2>Results for "{{ query }}"</h2>
+        <div class="list-group">
+            {% for food in foods %}
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">{{ food.food_name }}</h5>
+                            <p class="mb-1">
+                                Brand: {{ food.brand_name|default:"Generic" }}<br>
+                                Description: {{ food.food_description }}
+                            </p>
+                            {% if food.food_type %}
+                                <small>Type: {{ food.food_type }}</small>
+                            {% endif %}
+                        </div>
+                        {% if user.is_authenticated %}
+                            <form method="post" action="{% url 'add_food' %}" class="d-flex align-items-center">
+                                {% csrf_token %}
+                                <input type="hidden" name="food_name" value="{{ food.food_name }}">
+                                <input type="hidden" name="food_description" value="{{ food.food_description }}">
+                                <div class="me-2">
+                                    {% with nutrition=food.food_description|parse_nutrition %}
+                                        <label for="id_quantity_{{ forloop.counter }}" class="form-label">
+                                            Quantity
+                                            {% if nutrition.measurement_type == 'g' %}
+                                                (grams)
+                                            {% else %}
+                                                {% if nutrition.unit_label %}
+                                                    ({{ nutrition.unit_label }}{% if nutrition.base_amount != 1 %}s{% endif %})
+                                                {% else %}
+                                                    (pieces)
+                                                {% endif %}
+                                            {% endif %}
+                                        </label>
+                                        <input type="hidden" name="measurement_type" value="{{ nutrition.measurement_type }}">
+                                        <input type="hidden" name="unit_label" value="{{ nutrition.unit_label }}">
+                                        <div class="input-group" style="width: 150px;">
+                                            <input type="number"
+                                                   name="quantity"
+                                                   value="{% if nutrition.measurement_type == 'g' %}100{% else %}1{% endif %}"
+                                                   min="0.1"
+                                                   step="0.1"
+                                                   class="form-control"
+                                                   required
+                                                   id="id_quantity_{{ forloop.counter }}">
+                                            <span class="input-group-text">
+                                                {% if nutrition.measurement_type == 'g' %}g{% else %}{{ nutrition.unit_label }}{% endif %}
+                                            </span>
+                                        </div>
+                                        <small class="form-text text-muted">
+                                            Base: {{ nutrition.base_amount }}{{ nutrition.unit_label }}
+                                        </small>
+                                    {% endwith %}
+                                </div>
+                                <button type="submit" class="btn btn-success">Add Food</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</main>
+{% endblock %}

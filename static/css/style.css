@@ -1,0 +1,113 @@
+body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+            min-height: 100vh;
+            color: #22223b;
+}
+header {
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+    border-bottom: none;
+}
+.navbar-brand {
+    font-size: 2rem;
+    color: #4361ee !important;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+nav .btn {
+    border-radius: 22px;
+    font-weight: 600;
+    padding: 0.4rem 1.3rem;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.07);
+}
+nav .btn-outline-primary {
+    color: #4361ee;
+    border-color: #4361ee;
+}
+nav .btn-outline-primary:hover {
+    background: #4361ee;
+    color: #fff;
+}
+nav .btn-outline-success {
+    color: #06d6a0;
+    border-color: #06d6a0;
+}
+nav .btn-outline-success:hover {
+    background: #06d6a0;
+    color: #fff;
+}
+nav .btn-outline-danger {
+    color: #ef233c;
+    border-color: #ef233c;
+}
+nav .btn-outline-danger:hover {
+    background: #ef233c;
+    color: #fff;
+}
+main.container {
+    flex: 1 0 auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(67, 97, 238, 0.08);
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    margin-bottom: 2.5rem;
+    margin-top: 2.5rem;
+}
+.alert {
+    border-radius: 10px;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.04);
+}
+footer {
+    flex-shrink: 0;
+    background: #fff;
+    color: #adb5bd;
+    font-size: 1rem;
+    border-top: none;
+    box-shadow: 0 -2px 12px rgba(44, 62, 80, 0.04);
+    margin-top: auto;
+}
+footer .container {
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+}
+@media (max-width: 600px) {
+    main.container {
+        padding: 1rem 0.5rem;
+    }
+    .navbar-brand {
+        font-size: 1.3rem;
+    }
+}
+label[for="id_query"] {
+    color: blue;
+    margin: 0.5rem 0;
+}
+.search-input {
+    min-width: 300px;
+    width: 100%;
+}
+
+/* Add fixed width for quantity input fields */
+.input-group {
+    width: 200px !important;
+}
+
+.form-control[type="number"] {
+    min-width: 100px;
+    width: 100px;
+}
+
+.input-group-text {
+    min-width: 40px;
+    text-align: center;
+}
+.btn.w-100 {
+    width: 200px !important;
+    max-width: 100%;
+    margin: 0 ;
+    display: block;
+
+}

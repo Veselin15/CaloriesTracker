@@ -1,0 +1,67 @@
+Project Plan: Calories Tracker
+1. Core Models (at least 5)
+1. User
+Use Django’s built-in User model (or extend it for profile info).
+2. Food
+Stores food items, their nutritional values, and optional brand info.
+Fields: name, brand, description, calories, fat, carbs, protein, serving_size, etc.
+3. FoodEaten (already present)
+Logs what a user eats, when, and in what quantity.
+Fields: user, food, quantity, measurement_type, unit_label, date_eaten, etc.
+4. Meal
+Groups multiple FoodEaten entries into a meal (breakfast, lunch, etc.).
+Fields: user, name (e.g., "Breakfast"), date, foods (ManyToMany to FoodEaten).
+5. Goal
+Stores user-specific goals (calories, macros, weight, etc.).
+Fields: user, daily_calorie_goal, protein_goal, carbs_goal, fat_goal, weight_goal, etc.
+6. (Optional) WeightLog
+Tracks user’s weight over time.
+Fields: user, weight, date_logged.
+2. Features & Functionality
+A. Food Search & Logging
+Search for foods (API or local DB).
+Log foods eaten with quantity and date.
+B. Meal Management
+Allow users to group foods into meals.
+View meal summaries.
+C. Goals & Progress
+Users set daily/weekly goals for calories/macros/weight.
+Compare intake vs. goals.
+D. Graphs & Visualization
+Calories over time (daily, weekly, monthly).
+Macronutrient breakdown (pie chart for fat/carbs/protein).
+Progress toward goals (bar/line charts).
+Weight trend (if WeightLog is implemented).
+E. User Dashboard
+Show today’s intake, remaining calories, recent meals, and graphs.
+3. Graphs Implementation Ideas
+Use Chart.js or Plotly.js for interactive graphs in your Django templates.
+Backend: Aggregate data (calories per day, macros per meal, etc.) and pass to templates as JSON.
+Example graphs:
+Line Chart: Calories consumed per day over the last 30 days.
+Pie Chart: Today’s macronutrient distribution.
+Bar Chart: Comparison of intake vs. goals.
+4. Suggested Steps
+Design Models
+Implement the 5+ models above in models.py.
+Migrations
+Run migrations to create tables.
+Forms & Views
+Create forms for logging food, meals, goals, and weight.
+Build views for dashboard, food search, meal logging, and goal setting.
+Templates
+Build pages for dashboard, food search, meal log, and progress.
+Graph Integration
+Aggregate data in views.
+Pass data to templates and render with Chart.js/Plotly.
+Testing & Polish
+Test all flows.
+Add user feedback, error handling, and polish UI.
+5. Extra Ideas
+Reminders/Notifications: Remind users to log meals or weigh in.
+Export Data: Allow users to export their logs as CSV.
+Social Features: Share progress with friends.
+Achievements: Award badges for streaks or goals met.
+Summary Table
+UserAuthentication & user infoFoodStores food items & nutritionFoodEatenLogs what user eatsMealGroups foods into mealsGoalStores user goalsWeightLog*Tracks weight over time (optional)
+Let me know if you want a sample models.py or a sample graph integration!
