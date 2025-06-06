@@ -58,7 +58,7 @@ def search_food(query):
         "method": "foods.search",
         "search_expression": query,
         "format": "json",
-        "max_results": 15  # Add this to ensure we get results
+        "max_results": 20  # Add this to ensure we get results
     }
 
     headers = {

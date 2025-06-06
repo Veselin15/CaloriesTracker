@@ -22,66 +22,24 @@
     {% endif %}
 
     {% if foods %}
-        <h2>Results for "{{ query }}"</h2>
-        <div class="list-group">
-            {% for food in foods %}
-                <div class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5 class="mb-1">{{ food.food_name }}</h5>
-                            <p class="mb-1">
-                                Brand: {{ food.brand_name|default:"Generic" }}<br>
-                                Description: {{ food.food_description }}
-                            </p>
-                            {% if food.food_type %}
-                                <small>Type: {{ food.food_type }}</small>
-                            {% endif %}
+        <div class="search-results mt-4">
+            <h3>Search Results</h3>
+            <div class="row">
+                {% for food in foods %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ food.food_name }}</h5>
+                                <p class="card-text">{{ food.food_description }}</p>
+                                <a href="{% url 'add_food' %}?food_name={{ food.food_name|urlencode }}&food_description={{ food.food_description|urlencode }}"
+                                   class="btn btn-primary">
+                                    Add This Food
+                                </a>
+                            </div>
                         </div>
-                        {% if user.is_authenticated %}
-                            <form method="post" action="{% url 'add_food' %}" class="d-flex align-items-center">
-                                {% csrf_token %}
-                                <input type="hidden" name="food_name" value="{{ food.food_name }}">
-                                <input type="hidden" name="food_description" value="{{ food.food_description }}">
-                                <div class="me-2">
-                                    {% with nutrition=food.food_description|parse_nutrition %}
-                                        <label for="id_quantity_{{ forloop.counter }}" class="form-label">
-                                            Quantity
-                                            {% if nutrition.measurement_type == 'g' %}
-                                                (grams)
-                                            {% else %}
-                                                {% if nutrition.unit_label %}
-                                                    ({{ nutrition.unit_label }}{% if nutrition.base_amount != 1 %}s{% endif %})
-                                                {% else %}
-                                                    (pieces)
-                                                {% endif %}
-                                            {% endif %}
-                                        </label>
-                                        <input type="hidden" name="measurement_type" value="{{ nutrition.measurement_type }}">
-                                        <input type="hidden" name="unit_label" value="{{ nutrition.unit_label }}">
-                                        <div class="input-group" style="width: 150px;">
-                                            <input type="number"
-                                                   name="quantity"
-                                                   value="{% if nutrition.measurement_type == 'g' %}100{% else %}1{% endif %}"
-                                                   min="0.1"
-                                                   step="0.1"
-                                                   class="form-control"
-                                                   required
-                                                   id="id_quantity_{{ forloop.counter }}">
-                                            <span class="input-group-text">
-                                                {% if nutrition.measurement_type == 'g' %}g{% else %}{{ nutrition.unit_label }}{% endif %}
-                                            </span>
-                                        </div>
-                                        <small class="form-text text-muted">
-                                            Base: {{ nutrition.base_amount }}{{ nutrition.unit_label }}
-                                        </small>
-                                    {% endwith %}
-                                </div>
-                                <button type="submit" class="btn btn-success">Add Food</button>
-                            </form>
-                        {% endif %}
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     {% endif %}
 </main>

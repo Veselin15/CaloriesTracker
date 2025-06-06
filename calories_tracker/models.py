@@ -15,6 +15,7 @@ class Food_Eaten(models.Model):
     carbs = models.FloatField()
     protein = models.FloatField()
     date_eaten = models.DateField(auto_now_add=True)
+    food_image = models.URLField(max_length=500, blank=True, null=True)
 
     @staticmethod
     def parse_nutrition(food_description):

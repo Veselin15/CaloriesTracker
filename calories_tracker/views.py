@@ -11,52 +11,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-@login_required
-def add_food(request):
-    if request.method == 'POST':
-        try:
-            # Log the POST data for debugging
-            logger.debug(f"POST data received: {request.POST}")
-
-            food_name = request.POST.get('food_name')
-            food_description = request.POST.get('food_description')
-            quantity = float(request.POST.get('quantity', 1))
-
-            # Parse base nutrition info
-            base_nutrition = Food_Eaten.parse_nutrition(food_description)
-            logger.debug(f"Base nutrition parsed: {base_nutrition}")
-
-            # Calculate nutrition for the specified quantity
-            nutrition = Food_Eaten.calculate_nutrition_for_quantity(base_nutrition, quantity)
-            logger.debug(f"Calculated nutrition: {nutrition}")
-
-            # Create new Food_Eaten entry
-            food_entry = Food_Eaten.objects.create(
-                user=request.user,
-                food_name=food_name,
-                quantity=quantity,
-                measurement_type=base_nutrition['measurement_type'],
-                unit_label=base_nutrition['unit_label'],
-                calories=nutrition['calories'],
-                fat=nutrition['fat'],
-                carbs=nutrition['carbs'],
-                protein=nutrition['protein']
-            )
-
-            # Log successful creation
-            logger.debug(f"Food entry created: {food_entry.id}")
-
-            quantity_str = f"{quantity}g" if base_nutrition[
-                                                 'measurement_type'] == 'g' else f"{quantity} {base_nutrition['unit_label']}{'s' if quantity > 1 else ''}"
-            messages.success(request, f'Added {quantity_str} of {food_name} to your food log!')
-
-        except Exception as e:
-            # Log any errors that occur
-            logger.error(f"Error adding food: {str(e)}")
-            messages.error(request, "An error occurred while adding the food. Please try again.")
-
-    return redirect('home')
-
 def home(request):
     if not request.user.is_authenticated:
         messages.warning(request, 'Please log in to track your foods.')
@@ -111,3 +65,57 @@ def home(request):
         'debug_info': debug_info if settings.DEBUG else None
     }
     return render(request, "home.html", context)
+
+
+@login_required
+def add_food(request):
+    food_data = None
+
+    if request.method == 'GET':
+        # Get food details from query parameters (from search results)
+        food_name = request.GET.get('food_name')
+        food_description = request.GET.get('food_description')
+
+        if food_name and food_description:
+            food_data = {
+                'food_name': food_name,
+                'food_description': food_description
+            }
+
+    elif request.method == 'POST':
+        try:
+            # Process the form submission to add the food
+            food_name = request.POST.get('food_name')
+            food_description = request.POST.get('food_description')
+            quantity = float(request.POST.get('quantity', 1))
+            measurement_type = request.POST.get('measurement_type')
+            unit_label = request.POST.get('unit_label')
+
+            # Parse base nutrition info
+            base_nutrition = Food_Eaten.parse_nutrition(food_description)
+
+            # Calculate nutrition for the specified quantity
+            nutrition = Food_Eaten.calculate_nutrition_for_quantity(base_nutrition, quantity)
+
+            # Create new Food_Eaten entry
+            food_entry = Food_Eaten.objects.create(
+                user=request.user,
+                food_name=food_name,
+                quantity=quantity,
+                measurement_type=measurement_type or base_nutrition['measurement_type'],
+                unit_label=unit_label or base_nutrition['unit_label'],
+                calories=nutrition['calories'],
+                fat=nutrition['fat'],
+                carbs=nutrition['carbs'],
+                protein=nutrition['protein']
+            )
+
+            quantity_str = f"{quantity}g" if measurement_type == 'g' else f"{quantity} {unit_label}{'s' if quantity > 1 else ''}"
+            messages.success(request, f'Added {quantity_str} of {food_name} to your food log!')
+
+            return redirect('home')
+
+        except Exception as e:
+            messages.error(request, f"Error adding food: {str(e)}")
+
+    return render(request, "calories_tracker/add_food.html", {'food': food_data})
