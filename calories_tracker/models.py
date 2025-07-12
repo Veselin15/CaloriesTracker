@@ -10,7 +10,7 @@ class Food_Eaten(models.Model):
     quantity = models.FloatField(default=1)
     measurement_type = models.CharField(max_length=10, default='g')  # 'g' or 'unit'
     unit_label = models.CharField(max_length=50, blank=True, null=True)
-    calories = models.IntegerField()
+    calories = models.FloatField()
     fat = models.FloatField()
     carbs = models.FloatField()
     protein = models.FloatField()

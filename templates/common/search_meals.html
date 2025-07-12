@@ -3,22 +3,23 @@
 {% block title %}Search Meals - Calories Tracker{% endblock %}
 
 {% block content %}
-<main>
-    <h1 class="mb-4">Search Meals</h1>
-    <form method="get" class="search-form d-flex mb-4">
-        <input type="text" name="search-field" placeholder="Search food..." class="form-control me-2 search-input" value="{{ request.GET.q|default_if_none:'' }}">
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+    <main>
+        <h1 class="mb-4">Search Meals</h1>
+        <form method="get" class="search-form d-flex mb-4">
+            <input type="text" name="search-field" placeholder="Search food..." class="form-control me-2 search-input"
+                   value="{{ request.GET.q|default_if_none:'' }}">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
 
-    <ul class="results-list">
-        {% for food in foods %}
-            <li>
-                <span class="food-name">{{ food.food_name }}</span>
-                <span class="food-description">- {{ food.food_description }}</span>
-            </li>
-        {% empty %}
-            <li class="no-results">No results</li>
-        {% endfor %}
-    </ul>
-</main>
+        <ul class="results-list">
+            {% for food in foods %}
+                <li>
+                    <span class="food-name">{{ food.food_name }}</span>
+                    <span class="food-description">- {{ food.food_description }}</span>
+                </li>
+            {% empty %}
+                <li class="no-results">No results</li>
+            {% endfor %}
+        </ul>
+    </main>
 {% endblock %}

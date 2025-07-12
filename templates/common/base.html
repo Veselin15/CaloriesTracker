@@ -6,54 +6,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Calories Tracker{% endblock %}</title>
     <!-- Bootstrap (optional, for grid and utilities) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <!-- Custom Styles -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
 
     {% block extra_head %}
 
     {% endblock %}
 </head>
 <body>
-    <!-- Header -->
-    <header class="bg-light py-3 mb-4 border-bottom">
-        <div class="container d-flex flex-wrap justify-content-between align-items-center">
-            <a href="{% url 'home' %}" class="navbar-brand fw-bold text-primary">Calories Tracker</a>
-            <nav>
-                {% if user.is_authenticated %}
-                    <span class="me-3">Logged in as: <strong>{{ user.username }}</strong></span>
-                    <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Log Out</a>
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">Log In</a>
-                    <a href="{% url 'register' %}" class="btn btn-outline-success btn-sm ms-2">Register</a>
-                {% endif %}
-            </nav>
-        </div>
-    </header>
+<!-- Header -->
+<header class="bg-light py-3 mb-4 border-bottom">
+    {% include 'common/nav.html' %}
+</header>
 
-    <main class="container">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-        {% block content %}
+<main class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% block content %}
 
-        {% endblock %}
-    </main>
+    {% endblock %}
+</main>
 
-    <!-- Footer -->
-    <footer class="bg-light text-center py-3 mt-5 border-top">
-        <div class="container">
-            <span class="text-muted">&copy; {{ year|default:2024 }} Calories Tracker. All rights reserved.</span>
-        </div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    {% block extra_js %}{% endblock %}
+<!-- Footer -->
+<footer class="bg-light text-center py-3 mt-5 border-top">
+    <div class="container">
+        <span class="text-muted">&copy; {{ year|default:2024 }} Calories Tracker. All rights reserved.</span>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>
