@@ -22,7 +22,7 @@ from calories_tracker.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', include('user_register_login.urls')),
+    path('auth/', include('accounts.urls')),
     path('', include('calories_tracker.urls')),
 ]
 

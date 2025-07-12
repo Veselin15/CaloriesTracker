@@ -1,5 +1,5 @@
 from calories_tracker.choices import MealChoices
-from user_register_login.models import User
+from accounts.models import User
 from django.db import models
 import re
 

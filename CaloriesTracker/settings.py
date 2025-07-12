@@ -47,10 +47,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'calories_tracker',
-    'user_register_login',
+    'accounts',
 ]
 
-AUTH_USER_MODEL = 'user_register_login.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
