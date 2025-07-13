@@ -26,7 +26,7 @@
     {% include 'common/nav.html' %}
 </header>
 
-<main class="container">
+{% block main_wrapper %}<main class="container">{% endblock %}
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }}">
@@ -37,7 +37,7 @@
     {% block content %}
 
     {% endblock %}
-</main>
+{% block end_main_wrapper %}</main>{% endblock %}
 
 <!-- Footer -->
 <footer class="bg-light text-center py-3 mt-5 border-top">

@@ -8,21 +8,18 @@
                 {% csrf_token %}
                 <button type="submit" class="btn btn-outline-danger btn-sm">Log Out</button>
             </form>
-            <a href="{% url 'profile-details' pk=user.id %}" class="btn btn-outline-secondary btn-sm ms-2">Profile</a>
-            {% if request.user.profile.profile_picture %}
-                <img src="{{ request.user.profile.profile_picture.url }}" alt="Profile"
-                     class="profile-img-navbar ms-2">
-            {% else %}
-                <img src="{% static 'images/default-profile.png' %}" alt="Profile"
-                     class="profile-img-navbar ms-2">
-            {% endif %}
-
+            <a href="{% url 'profile-details' pk=user.id %}" class="profile-pic-link ms-2" title="View Profile">
+                {% if request.user.profile.profile_picture %}
+                    <img src="{{ request.user.profile.profile_picture.url }}" alt="Profile"
+                         class="profile-img-navbar ms-2">
+                {% else %}
+                    <img src="{% static 'images/default-profile.png' %}" alt="Profile"
+                         class="profile-img-navbar ms-2">
+                {% endif %}
+            </a>
         {% else %}
             <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">Log In</a>
             <a href="{% url 'register' %}" class="btn btn-outline-success btn-sm ms-2">Register</a>
         {% endif %}
     </nav>
 </div>
-
-
-
