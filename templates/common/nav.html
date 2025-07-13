@@ -1,3 +1,4 @@
+{% load static %}
 <div class="container d-flex flex-wrap justify-content-between align-items-center">
     <a href="{% url 'home' %}" class="navbar-brand fw-bold text-primary">Calories Tracker</a>
     <nav>
@@ -8,6 +9,14 @@
                 <button type="submit" class="btn btn-outline-danger btn-sm">Log Out</button>
             </form>
             <a href="{% url 'profile-details' pk=user.id %}" class="btn btn-outline-secondary btn-sm ms-2">Profile</a>
+            {% if request.user.profile.profile_picture %}
+                <img src="{{ request.user.profile.profile_picture.url }}" alt="Profile"
+                     class="profile-img-navbar ms-2">
+            {% else %}
+                <img src="{% static 'images/default-profile.png' %}" alt="Profile"
+                     class="profile-img-navbar ms-2">
+            {% endif %}
+
         {% else %}
             <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">Log In</a>
             <a href="{% url 'register' %}" class="btn btn-outline-success btn-sm ms-2">Register</a>

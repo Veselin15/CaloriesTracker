@@ -30,12 +30,25 @@ class Profile(models.Model):
     bio = models.TextField(blank=True, null=True)
     gender = models.CharField(max_length=20, choices=GENDER_CHOICES, blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        try:
+            old = Profile.objects.get(pk=self.pk)
+            if old.profile_picture and self.profile_picture != old.profile_picture:
+                if os.path.isfile(old.profile_picture.path):
+                    os.remove(old.profile_picture.path)
+        except Profile.DoesNotExist:
+            pass  # New profile, no old image to remove
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
     def delete(self, *args, **kwargs):
-        # Delete the image file when the profile is deleted
-        if self.profile_picture:
-            if os.path.isfile(self.profile_picture.path):
-                os.remove(self.profile_picture.path)
+        # Deactivate the user account
+        if self.user:
+            self.user.is_active = False
+            self.user.save()
+        # Delete the image file if it exists
+        if self.profile_picture and os.path.isfile(self.profile_picture.path):
+            os.remove(self.profile_picture.path)
         super().delete(*args, **kwargs)

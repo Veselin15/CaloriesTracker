@@ -86,6 +86,11 @@ class ProfileEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = ProfileEditForm
     template_name = 'profile/profile_edit.html'
 
+    def get_object(self, queryset=None):
+        user_id = self.kwargs['pk']
+        profile, created = Profile.objects.get_or_create(user_id=user_id)
+        return profile
+
     def test_func(self):
         profile = self.get_object()
         return self.request.user.id == profile.user.id
@@ -93,12 +98,39 @@ class ProfileEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('profile-details', kwargs={'pk': self.object.user.id})
 
-    def form_valid(self, form):
-        # Delete old profile picture if a new one is uploaded
-        if 'profile_picture' in form.changed_data and self.object.profile_picture:
-            self.object.profile_picture.delete()
-        return super().form_valid(form)
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        profile_form = ProfileEditForm(instance=self.object)
+        picture_form = ProfilePictureForm(instance=self.object)
+        return render(request, self.template_name, {
+            'form': profile_form,
+            'picture_form': picture_form,
+            'profile': self.object,
+        })
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        profile_form = ProfileEditForm(request.POST, instance=self.object)
+        picture_form = ProfilePictureForm(request.POST, request.FILES, instance=self.object)
+        if profile_form.is_valid() and picture_form.is_valid():
+            profile_form.save()
+            picture_form.save()
+            return redirect(self.get_success_url())
+        return render(request, self.template_name, {
+            'form': profile_form,
+            'picture_form': picture_form,
+            'profile': self.object,
+        })
+class ProfileDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Profile
+    template_name = 'profile/profile_delete.html'
+    context_object_name = 'profile'
+    success_url = reverse_lazy('home')
 
-class ProfileDeleteView(DeleteView):
-    pass
+    def get_object(self, queryset=None):
+        user_id = self.kwargs['pk']
+        return Profile.objects.get(user_id=user_id)
+
+    def test_func(self):
+        profile = self.get_object()
+        return self.request.user.id == profile.user.id

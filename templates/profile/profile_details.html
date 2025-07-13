@@ -8,11 +8,10 @@
             </div>
             <div class="card-body">
                 {% if profile.profile_picture %}
-                    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="img-thumbnail mb-3"
-                         style="max-width: 200px;">
+                    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-img-circle">
                 {% else %}
                     <img src="{% static 'images/default-profile.png' %}" alt="Default Profile Picture"
-                         class="img-thumbnail mb-3" style="max-width: 200px;">
+                         class="profile-img-circle">
                 {% endif %}
 
                 <div class="row">
@@ -31,8 +30,8 @@
 
                 {% if user.id == profile.user.id %}
                     <div class="mt-3">
-                        <a href="{% url 'edit-profile' pk=profile.pk %}" class="btn btn-primary">Edit Profile</a>
-                        <a href="{% url 'delete-profile' pk=profile.pk %}" class="btn btn-danger">Delete Profile</a>
+                        <a href="{% url 'edit-profile' pk=profile.user.pk %}" class="btn btn-primary">Edit Profile</a>
+                        <a href="{% url 'delete-profile' pk=profile.user.pk %}" class="btn btn-danger">Delete Profile</a>
                     </div>
                 {% endif %}
             </div>
