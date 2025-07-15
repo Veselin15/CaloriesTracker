@@ -52,13 +52,24 @@
                                 <h5>Nutrition Information</h5>
                                 <p><strong>Base Amount:</strong> {{ nutrition.base_amount }}{{ nutrition.unit_label }}</p>
                                 <ul class="list-group">
-                                    <li class="list-group-item">Calories: {{ nutrition.calories }}</li>
-                                    <li class="list-group-item">Fat: {{ nutrition.fat }}g</li>
-                                    <li class="list-group-item">Carbs: {{ nutrition.carbs }}g</li>
-                                    <li class="list-group-item">Protein: {{ nutrition.protein }}g</li>
+                                    <li class="list-group-item">Calories: {{ nutrition.calories }} kcal</li>
+                                    <li class="list-group-item">Fat: {{ nutrition.fat }} g</li>
+                                    <li class="list-group-item">Carbs: {{ nutrition.carbs }} g</li>
+                                    <li class="list-group-item">Protein: {{ nutrition.protein }} g</li>
                                 </ul>
                             </div>
                         {% endwith %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_meal" class="form-label">Assign to meal</label>
+                        <select name="meal" id="id_meal" class="form-control" required>
+                            <option value="">Select a meal</option>
+                            <option value="breakfast">Breakfast</option>
+                            <option value="lunch">Lunch</option>
+                            <option value="dinner">Dinner</option>
+                            <option value="snack">Snack</option>
+                        </select>
                     </div>
 
                     <button type="submit" class="btn btn-success">Add Food</button>

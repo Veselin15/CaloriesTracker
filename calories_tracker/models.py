@@ -14,8 +14,14 @@ class Food_Eaten(models.Model):
     fat = models.FloatField()
     carbs = models.FloatField()
     protein = models.FloatField()
-    date_eaten = models.DateField(auto_now_add=True)
+    date_eaten = models.DateTimeField(auto_now_add=True)
     food_image = models.URLField(max_length=500, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        import datetime
+        if self.date_eaten:
+            self.date_eaten = self.date_eaten.replace(second=0, microsecond=0)
+        super().save(*args, **kwargs)
 
     @staticmethod
     def parse_nutrition(food_description):

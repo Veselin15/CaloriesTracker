@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
+from .models import Meal
+from datetime import date
 from CaloriesTracker import settings
 from .fatsecret_utils import search_food
 from .forms import AddFoodForm, FoodSearchForm
@@ -97,6 +98,17 @@ def add_food(request):
             # Calculate nutrition for the specified quantity
             nutrition = Food_Eaten.calculate_nutrition_for_quantity(base_nutrition, quantity)
 
+            # Get the selected meal type from the form
+            meal_type = request.POST.get('meal')
+
+
+            # Get or create the Meal instance for this user, date, and meal type
+            meal_obj, created = Meal.objects.get_or_create(
+                user=request.user,
+                name=meal_type,
+                date=date.today()
+            )
+
             # Create new Food_Eaten entry
             food_entry = Food_Eaten.objects.create(
                 user=request.user,
@@ -110,8 +122,11 @@ def add_food(request):
                 protein=nutrition['protein']
             )
 
+            # Associate the food entry with the meal
+            meal_obj.meals.add(food_entry)
+
             quantity_str = f"{quantity}g" if measurement_type == 'g' else f"{quantity} {unit_label}{'s' if quantity > 1 else ''}"
-            messages.success(request, f'Added {quantity_str} of {food_name} to your food log!')
+            messages.success(request, f'Added {quantity_str} of {food_name} to your {meal_type}!')
 
             return redirect('home')
 
