@@ -8,6 +8,8 @@ from .fatsecret_utils import search_food
 from .forms import AddFoodForm, FoodSearchForm
 from .models import Food_Eaten
 import logging
+from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 logger = logging.getLogger(__name__)
 
@@ -134,3 +136,12 @@ def add_food(request):
             messages.error(request, f"Error adding food: {str(e)}")
 
     return render(request, "calories_tracker/add_food.html", {'food': food_data})
+
+
+
+class MyMealsView(LoginRequiredMixin, View):
+    def get(self, request):
+        meals = Meal.objects.filter(user=request.user).order_by('-date', 'name')
+        return render(request, "calories_tracker/my_meals.html", {'meals': meals})
+
+
