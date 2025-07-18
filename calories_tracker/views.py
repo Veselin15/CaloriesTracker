@@ -200,11 +200,11 @@ class MyMealsView(LoginRequiredMixin, View):
                 selected_date = timezone.localdate()
         else:
             selected_date = timezone.localdate()
-        meals = Meal.objects.filter(user=request.user, date=selected_date).order_by('name')
-        foods = Food_Eaten.objects.filter(user=request.user, date_eaten__date=selected_date).order_by('meal__name')
-        # For navigation
+        # Always calculate prev/next based on selected_date
         prev_date = selected_date - datetime.timedelta(days=1)
         next_date = selected_date + datetime.timedelta(days=1)
+        meals = Meal.objects.filter(user=request.user, date=selected_date).order_by('name')
+        foods = Food_Eaten.objects.filter(user=request.user, date_eaten__date=selected_date).order_by('meal__name')
         context = {
             'meals': meals,
             'foods': foods,
