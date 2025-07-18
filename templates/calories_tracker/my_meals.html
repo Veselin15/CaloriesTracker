@@ -1,10 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>My Meals</title>
-</head>
-<body>
+{% extends 'common/base.html' %}
+{% block content %}
+    <div class="container mt-4">
+        <h2>My Meals for {{ selected_date }}</h2>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="?date={{ prev_date }}" class="btn btn-outline-primary">&larr; Previous Day</a>
+            <span class="fw-bold">{{ selected_date }}</span>
+            <a href="?date={{ next_date }}" class="btn btn-outline-primary">Next Day &rarr;</a>
+        </div>
+        {% if meals %}
+            <div class="list-group">
+                {% for meal in meals %}
+                    <div class="list-group-item mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1">{{ meal.get_name_display }}</h5>
+                                <small>Date: {{ meal.date }}</small>
+                                <ul>
+                                    {% for food in meal.foods_eaten.all %}
+                                        <li>
+                                            {{ food.food_name }} - {{ food.quantity }} {{ food.unit_label }}
+                                            ({{ food.calories }} kcal, {{ food.protein }}g protein, {{ food.carbs }}g
+                                            carbs, {{ food.fat }}g fat)
+                                            <form method="post" action="" style="display:inline;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="delete_food_id" value="{{ food.id }}">
+                                                <input type="hidden" name="date" value="{{ selected_date }}">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm"
+                                                        onclick="return confirm('Delete this food?');">Delete
+                                                </button>
+                                            </form>
+                                        </li>
+                                    {% empty %}
+                                        <li>No foods added to this meal.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <form method="post" action="" style="margin:0;">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_meal_id" value="{{ meal.id }}">
+                                <input type="hidden" name="date" value="{{ selected_date }}">
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Delete this meal?');">Delete Meal
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No meals for this day.</p>
+        {% endif %}
 
-</body>
-</html>
+        <div class="mt-4 text-center">
+            <a href="{% url 'search_for_foods' %}" class="btn btn-success btn-lg">
+                + Add Food
+            </a>
+        </div>
+    </div>
+{% endblock %}

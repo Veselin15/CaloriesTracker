@@ -13,8 +13,28 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 logger = logging.getLogger(__name__)
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Meal
+from datetime import date
+from CaloriesTracker import settings
+from .fatsecret_utils import search_food
+from .forms import AddFoodForm, FoodSearchForm
+from .models import Food_Eaten
+import logging
+from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+logger = logging.getLogger(__name__)
+
 
 def home(request):
+    # Minimal home page, no search form/results
+    return render(request, "home.html", {})
+
+
+def search_for_foods(request):
     if not request.user.is_authenticated:
         messages.warning(request, 'Please log in to track your foods.')
 
@@ -67,12 +87,14 @@ def home(request):
         'query': request.GET.get('query', ''),
         'debug_info': debug_info if settings.DEBUG else None
     }
-    return render(request, "home.html", context)
+    return render(request, "calories_tracker/search_for_foods.html", context)
 
 
 @login_required
 def add_food(request):
     food_data = None
+    today = date.today()
+    selected_date = today
 
     if request.method == 'GET':
         # Get food details from query parameters (from search results)
@@ -84,8 +106,20 @@ def add_food(request):
                 'food_name': food_name,
                 'food_description': food_description
             }
+        date_str = request.GET.get('date')
+        if date_str:
+            try:
+                selected_date = date.fromisoformat(date_str)
+            except ValueError:
+                selected_date = today
+        return render(request, "calories_tracker/add_food.html", {
+            'food': food_data,
+            'today': today,
+            'selected_date': selected_date,
+        })
 
     elif request.method == 'POST':
+        today = date.today()
         try:
             # Process the form submission to add the food
             food_name = request.POST.get('food_name')
@@ -103,12 +137,20 @@ def add_food(request):
             # Get the selected meal type from the form
             meal_type = request.POST.get('meal')
 
-
+            # Get the date from the form, default to today
+            date_str = request.POST.get('date')
+            if date_str:
+                try:
+                    selected_date = date.fromisoformat(date_str)
+                except ValueError:
+                    selected_date = today
+            else:
+                selected_date = today
             # Get or create the Meal instance for this user, date, and meal type
             meal_obj, created = Meal.objects.get_or_create(
                 user=request.user,
                 name=meal_type,
-                date=date.today()
+                date=selected_date
             )
 
             # Create new Food_Eaten entry
@@ -121,11 +163,11 @@ def add_food(request):
                 calories=nutrition['calories'],
                 fat=nutrition['fat'],
                 carbs=nutrition['carbs'],
-                protein=nutrition['protein']
+                protein=nutrition['protein'],
+                meal_id=meal_obj.id
             )
 
             # Associate the food entry with the meal
-            meal_obj.meals.add(food_entry)
 
             quantity_str = f"{quantity}g" if measurement_type == 'g' else f"{quantity} {unit_label}{'s' if quantity > 1 else ''}"
             messages.success(request, f'Added {quantity_str} of {food_name} to your {meal_type}!')
@@ -135,13 +177,62 @@ def add_food(request):
         except Exception as e:
             messages.error(request, f"Error adding food: {str(e)}")
 
-    return render(request, "calories_tracker/add_food.html", {'food': food_data})
+    return render(request, "calories_tracker/add_food.html", {
+        'food': food_data,
+        'today': today,
+        'selected_date': selected_date,
+    })
 
+from django.utils import timezone
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 
 class MyMealsView(LoginRequiredMixin, View):
     def get(self, request):
-        meals = Meal.objects.filter(user=request.user).order_by('-date', 'name')
-        return render(request, "calories_tracker/my_meals.html", {'meals': meals})
+        import datetime
+        # Get date from query params, default to today
+        date_str = request.GET.get('date')
+        if date_str:
+            try:
+                selected_date = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+            except ValueError:
+                selected_date = timezone.localdate()
+        else:
+            selected_date = timezone.localdate()
+        meals = Meal.objects.filter(user=request.user, date=selected_date).order_by('name')
+        foods = Food_Eaten.objects.filter(user=request.user, date_eaten__date=selected_date).order_by('meal__name')
+        # For navigation
+        prev_date = selected_date - datetime.timedelta(days=1)
+        next_date = selected_date + datetime.timedelta(days=1)
+        context = {
+            'meals': meals,
+            'foods': foods,
+            'selected_date': selected_date,
+            'prev_date': prev_date,
+            'next_date': next_date,
+        }
+        return render(request, "calories_tracker/my_meals.html", context)
 
-
+    def post(self, request):
+        # Handle meal deletion
+        meal_id = request.POST.get('delete_meal_id')
+        food_id = request.POST.get('delete_food_id')
+        date_str = request.POST.get('date')
+        if meal_id:
+            try:
+                meal = Meal.objects.get(id=meal_id, user=request.user)
+                meal.delete()
+            except Meal.DoesNotExist:
+                pass
+        elif food_id:
+            try:
+                food = Food_Eaten.objects.get(id=food_id, user=request.user)
+                food.delete()
+            except Food_Eaten.DoesNotExist:
+                pass
+        # Redirect back to the same date
+        redirect_url = reverse('my_meals')
+        if date_str:
+            redirect_url += f'?date={date_str}'
+        return HttpResponseRedirect(redirect_url)

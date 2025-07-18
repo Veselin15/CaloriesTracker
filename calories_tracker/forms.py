@@ -1,5 +1,5 @@
 from django import forms
-
+from datetime import date
 class FoodSearchForm(forms.Form):
     query = forms.CharField(
         label='Search for food',
@@ -25,4 +25,9 @@ class AddFoodForm(forms.Form):
             'class': 'form-control',
             'step': '0.1',
         })
+    )
+    date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        initial=date.today
     )
