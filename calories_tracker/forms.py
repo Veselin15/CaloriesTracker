@@ -1,5 +1,7 @@
 from django import forms
 from datetime import date
+from django import forms
+from .models import Goal
 class FoodSearchForm(forms.Form):
     query = forms.CharField(
         label='Search for food',
@@ -31,3 +33,22 @@ class AddFoodForm(forms.Form):
         widget=forms.DateInput(attrs={'type': 'date'}),
         initial=date.today
     )
+
+
+class GoalForm(forms.ModelForm):
+    class Meta:
+        model = Goal
+        fields = [
+            'daily_calorie_goal',
+            'daily_fat_goal',
+            'daily_carbs_goal',
+            'daily_protein_goal',
+            'weight_goal'
+        ]
+        widgets = {
+            'daily_calorie_goal': forms.NumberInput(attrs={'placeholder': 'Calories'}),
+            'daily_fat_goal': forms.NumberInput(attrs={'placeholder': 'Fat (g)'}),
+            'daily_carbs_goal': forms.NumberInput(attrs={'placeholder': 'Carbs (g)'}),
+            'daily_protein_goal': forms.NumberInput(attrs={'placeholder': 'Protein (g)'}),
+            'weight_goal': forms.NumberInput(attrs={'placeholder': 'Target Weight (kg)'}),
+        }

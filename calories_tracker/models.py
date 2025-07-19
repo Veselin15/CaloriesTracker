@@ -14,7 +14,7 @@ class Food_Eaten(models.Model):
     fat = models.FloatField()
     carbs = models.FloatField()
     protein = models.FloatField()
-    date_eaten = models.DateTimeField(auto_now_add=True)
+    date_eaten = models.DateTimeField()
     food_image = models.URLField(max_length=500, blank=True, null=True)
     meal = models.ForeignKey('Meal', on_delete=models.CASCADE, blank=True, null=True, related_name='foods_eaten')
 
@@ -106,7 +106,7 @@ class Food_Eaten(models.Model):
 class Meal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=20, choices=MealChoices)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField()
 
     class Meta:
         unique_together = ('user', 'name', 'date')

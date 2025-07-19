@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Meal
-from datetime import date
+from datetime import date, datetime
 from CaloriesTracker import settings
 from .fatsecret_utils import search_food
 from .forms import AddFoodForm, FoodSearchForm
@@ -146,6 +146,7 @@ def add_food(request):
                     selected_date = today
             else:
                 selected_date = today
+            date_eaten = datetime.combine(selected_date, datetime.now().time())
             # Get or create the Meal instance for this user, date, and meal type
             meal_obj, created = Meal.objects.get_or_create(
                 user=request.user,
@@ -164,7 +165,8 @@ def add_food(request):
                 fat=nutrition['fat'],
                 carbs=nutrition['carbs'],
                 protein=nutrition['protein'],
-                meal_id=meal_obj.id
+                meal_id=meal_obj.id,
+                date_eaten = date_eaten
             )
 
             # Associate the food entry with the meal
@@ -236,3 +238,20 @@ class MyMealsView(LoginRequiredMixin, View):
         if date_str:
             redirect_url += f'?date={date_str}'
         return HttpResponseRedirect(redirect_url)
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import GoalForm
+from .models import Goal
+
+@login_required
+def set_goals(request):
+    goal, created = Goal.objects.get_or_create(user=request.user)
+    if request.method == 'POST':
+        form = GoalForm(request.POST, instance=goal)
+        if form.is_valid():
+            form.save()
+            return redirect('home')  # or wherever you want to redirect
+    else:
+        form = GoalForm(instance=goal)
+    return render(request, 'calories_tracker/set_goals.html', {'form': form})
