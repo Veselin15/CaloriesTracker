@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Meal
+from .models import Meal, WeightLog
 from datetime import date, datetime
 from CaloriesTracker import settings
 from .fatsecret_utils import search_food
-from .forms import AddFoodForm, FoodSearchForm
+from .forms import AddFoodForm, FoodSearchForm, WeightLogForm
 from .models import Food_Eaten
 import logging
 from django.views import View
@@ -255,3 +255,41 @@ def set_goals(request):
     else:
         form = GoalForm(instance=goal)
     return render(request, 'calories_tracker/set_goals.html', {'form': form})
+
+@login_required
+def track_weight(request):
+    today = date.today()
+    weight_entries = WeightLog.objects.filter(user=request.user).order_by('-date')
+    form = WeightLogForm()
+
+    if request.method == 'POST':
+        if 'delete_weight_id' in request.POST:
+            # Handle deletion
+            entry_id = request.POST.get('delete_weight_id')
+            WeightLog.objects.filter(id=entry_id, user=request.user).delete()
+            messages.success(request, "Weight entry deleted.")
+            return redirect('track_weight')
+        else:
+            # Handle add/update for today's date only
+            form = WeightLogForm(request.POST)
+            if form.is_valid():
+                weight = form.cleaned_data['weight']
+                weight_entry, created = WeightLog.objects.update_or_create(
+                    user=request.user,
+                    date=today,
+                    defaults={'weight': weight}
+                )
+                if created:
+                    messages.success(request, "Weight entry added for today.")
+                else:
+                    messages.success(request, "Weight entry updated for today.")
+                return redirect('track_weight')
+            else:
+                messages.error(request, "Please correct the errors below.")
+
+    context = {
+        'form': form,
+        'weight_entries': weight_entries,
+        'today': today,
+    }
+    return render(request, 'calories_tracker/track_weight.html', context)

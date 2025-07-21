@@ -1,7 +1,9 @@
 from django import forms
 from datetime import date
 from django import forms
-from .models import Goal
+from .models import Goal, WeightLog
+
+
 class FoodSearchForm(forms.Form):
     query = forms.CharField(
         label='Search for food',
@@ -51,4 +53,17 @@ class GoalForm(forms.ModelForm):
             'daily_carbs_goal': forms.NumberInput(attrs={'placeholder': 'Carbs (g)'}),
             'daily_protein_goal': forms.NumberInput(attrs={'placeholder': 'Protein (g)'}),
             'weight_goal': forms.NumberInput(attrs={'placeholder': 'Target Weight (kg)'}),
+        }
+
+class WeightLogForm(forms.ModelForm):
+    class Meta:
+        model = WeightLog
+        fields = ['weight']  # Only allow user to set weight
+        widgets = {
+            'weight': forms.NumberInput(attrs={
+                'class': 'form-control form-control-lg',
+                'step': '0.1',
+                'min': '0',
+                'placeholder': 'e.g. 70.5'
+            }),
         }

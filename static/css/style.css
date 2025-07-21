@@ -1,20 +1,23 @@
 body {
-            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
-            min-height: 100vh;
-            color: #22223b;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+    min-height: 100vh;
+    color: #22223b;
 }
+
 header {
     background: #fff;
     box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
     border-bottom: none;
 }
+
 .navbar-brand {
     font-size: 2rem;
     color: #4361ee !important;
     letter-spacing: 1px;
     font-weight: 700;
 }
+
 nav .btn {
     border-radius: 22px;
     font-weight: 600;
@@ -22,30 +25,37 @@ nav .btn {
     transition: background 0.18s, color 0.18s, box-shadow 0.18s;
     box-shadow: 0 2px 8px rgba(67, 97, 238, 0.07);
 }
+
 nav .btn-outline-primary {
     color: #4361ee;
     border-color: #4361ee;
 }
+
 nav .btn-outline-primary:hover {
     background: #4361ee;
     color: #fff;
 }
+
 nav .btn-outline-success {
     color: #06d6a0;
     border-color: #06d6a0;
 }
+
 nav .btn-outline-success:hover {
     background: #06d6a0;
     color: #fff;
 }
+
 nav .btn-outline-danger {
     color: #ef233c;
     border-color: #ef233c;
 }
+
 nav .btn-outline-danger:hover {
     background: #ef233c;
     color: #fff;
 }
+
 main.container {
     flex: 1 0 auto;
     background: #fff;
@@ -55,11 +65,13 @@ main.container {
     margin-bottom: 2.5rem;
     margin-top: 2.5rem;
 }
+
 .alert {
     border-radius: 10px;
     font-size: 1rem;
     box-shadow: 0 2px 8px rgba(67, 97, 238, 0.04);
 }
+
 footer {
     flex-shrink: 0;
     background: #fff;
@@ -69,22 +81,27 @@ footer {
     box-shadow: 0 -2px 12px rgba(44, 62, 80, 0.04);
     margin-top: auto;
 }
+
 footer .container {
     padding-top: 0.7rem;
     padding-bottom: 0.7rem;
 }
+
 @media (max-width: 600px) {
     main.container {
         padding: 1rem 0.5rem;
     }
+
     .navbar-brand {
         font-size: 1.3rem;
     }
 }
+
 label[for="id_query"] {
     color: blue;
     margin: 0.5rem 0;
 }
+
 .search-input {
     min-width: 300px;
     width: 100%;
@@ -104,13 +121,15 @@ label[for="id_query"] {
     min-width: 40px;
     text-align: center;
 }
+
 .btn.w-100 {
     width: 200px !important;
     max-width: 100%;
-    margin: 0 ;
+    margin: 0;
     display: block;
 
 }
+
 .profile-img-circle {
     width: 150px;
     height: 150px;
@@ -125,12 +144,14 @@ label[for="id_query"] {
     object-fit: cover;
     border-radius: 50%;
     border: 2px solid #fff;
-    box-shadow: 0 0 2px rgba(0,0,0,0.1);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
 }
+
 .profile-pic-link img {
     transition: box-shadow 0.2s, border 0.2s;
     cursor: pointer;
 }
+
 .profile-pic-link img:hover {
     box-shadow: 0 0 8px #007bff;
     border: 2px solid #007bff;
@@ -156,6 +177,7 @@ label[for="id_query"] {
     border-radius: 2rem;
     transition: background 0.3s;
 }
+
 .btn-gradient:hover, .btn-gradient:focus {
     background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
     color: #fff !important;
@@ -179,9 +201,19 @@ label[for="id_query"] {
 }
 
 /* Badge for weight and macros */
-.badge-weight, .badge-macro {
+.badge-weight {
+    background: #e0eafc; /* or any soft color you like */
+    color: #22223b !important; /* dark text for visibility */
     font-size: 1rem;
     padding: 0.5em 1.2em;
+    border-radius: 2rem;
+}
+
+.badge-macro {
+    color: #fff !important; /* Force white text */
+    font-size: 1rem;
+    padding: 0.5em 1.2em;
+    border-radius: 2rem;
 }
 
 .badge-gradient {
@@ -191,6 +223,14 @@ label[for="id_query"] {
     font-size: 1.2rem;
     padding: 0.6em 1.5em;
     display: inline-block;
-    box-shadow: 0 2px 8px rgba(106,17,203,0.08);
+    box-shadow: 0 2px 8px rgba(106, 17, 203, 0.08);
     letter-spacing: 1px;
 }
+
+.form-control::placeholder,
+input[type="number"]::placeholder {
+    font-size: 0.90rem;
+    color: #b0b3b8;
+    opacity: 1; /* Ensures color is applied in all browsers */
+}
+
