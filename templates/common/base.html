@@ -26,7 +26,7 @@
     {% include 'common/nav.html' %}
 </header>
 
-{% block main_wrapper %}<main class="container">{% endblock %}
+{% block main_wrapper %}<main class="">{% endblock %}
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }}">
