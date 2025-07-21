@@ -135,3 +135,62 @@ label[for="id_query"] {
     box-shadow: 0 0 8px #007bff;
     border: 2px solid #007bff;
 }
+
+/* Gradient card header */
+.card-gradient-header {
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    border-top-left-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    text-align: center;
+}
+
+/* Gradient button */
+.btn-gradient {
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff !important;
+    border: none;
+    border-radius: 2rem;
+    transition: background 0.3s;
+}
+.btn-gradient:hover, .btn-gradient:focus {
+    background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+    color: #fff !important;
+}
+
+/* Extra rounded card */
+.card.rounded-xl {
+    border-radius: 1.5rem;
+    overflow: hidden;
+}
+
+/* Rounded table */
+.table-rounded {
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+/* Card body soft background */
+.card-soft-bg {
+    background: #f8fafd;
+}
+
+/* Badge for weight and macros */
+.badge-weight, .badge-macro {
+    font-size: 1rem;
+    padding: 0.5em 1.2em;
+}
+
+.badge-gradient {
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff !important;
+    border-radius: 2rem;
+    font-size: 1.2rem;
+    padding: 0.6em 1.5em;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(106,17,203,0.08);
+    letter-spacing: 1px;
+}
