@@ -1,8 +1,9 @@
+from django.db.models import Sum
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Meal, WeightLog
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from CaloriesTracker import settings
 from .fatsecret_utils import search_food
 from .forms import AddFoodForm, FoodSearchForm, WeightLogForm
@@ -30,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 def home(request):
-    # Minimal home page, no search form/results
+
     return render(request, "home.html", {})
 
 
@@ -293,3 +294,38 @@ def track_weight(request):
         'today': today,
     }
     return render(request, 'calories_tracker/track_weight.html', context)
+
+
+@login_required
+def statistics(request):
+    today = timezone.localdate()
+    week_ago = today - timedelta(days=6)
+    # Weight data for the last 30 days
+    weight_logs = WeightLog.objects.filter(user=request.user, date__gte=today - timedelta(days=29)).order_by('date')
+    weights = [{'date': wl.date.strftime('%Y-%m-%d'), 'weight': wl.weight} for wl in weight_logs]
+
+    # Calories per day for the last 7 days
+    calories_per_day = (
+        Food_Eaten.objects.filter(user=request.user, date_eaten__date__gte=week_ago)
+        .values('date_eaten__date')
+        .annotate(total_calories=Sum('calories'))
+        .order_by('date_eaten__date')
+    )
+    calories = [{'date': c['date_eaten__date'].strftime('%Y-%m-%d'), 'calories': c['total_calories'] or 0} for c in calories_per_day]
+
+    # Macro breakdown for the last 7 days
+    macros = (
+        Food_Eaten.objects.filter(user=request.user, date_eaten__date__gte=week_ago)
+        .aggregate(
+            protein=Sum('protein'),
+            carbs=Sum('carbs'),
+            fat=Sum('fat')
+        )
+    )
+
+    context = {
+        'weights': weights,
+        'calories': calories,
+        'macros': macros,
+    }
+    return render(request, 'calories_tracker/statistics.html', context)
