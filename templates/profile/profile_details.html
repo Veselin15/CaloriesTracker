@@ -1,40 +1,55 @@
 {% extends 'common/base.html' %}
 {% load static %}
 {% block content %}
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-header">
-                <h3>Profile Details</h3>
-            </div>
-            <div class="card-body">
-                {% if profile.profile_picture %}
-                    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-img-circle">
-                {% else %}
-                    <img src="{% static 'images/default-profile.png' %}" alt="Default Profile Picture"
-                         class="profile-img-circle">
-                {% endif %}
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Username:</strong> {{ profile.user.username }}</p>
-                        <p><strong>Name:</strong> {{ profile.first_name }} {{ profile.last_name }}</p>
-                        <p><strong>Email:</strong> {{ profile.user.email }}</p>
-                        <p><strong>Date of Birth:</strong> {{ profile.date_of_birth|default:"Not specified" }}</p>
-                        <p><strong>Gender:</strong> {{ profile.gender|default:"Not specified" }}</p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Bio:</strong></p>
-                        <p>{{ profile.bio|default:"No bio available" }}</p>
-                    </div>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow border-0 rounded-xl">
+                <div class="card-gradient-header d-flex flex-column align-items-center py-4">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-img-circle mb-3 shadow">
+                    {% else %}
+                        <img src="{% static 'images/default-profile.png' %}" alt="Default Profile Picture"
+                             class="profile-img-circle mb-3 shadow">
+                    {% endif %}
+                    <h2 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">
+                        <i class="bi bi-person-circle"></i> {{ profile.user.username }}
+                    </h2>
                 </div>
-
-                {% if user.id == profile.user.id %}
-                    <div class="mt-3">
-                        <a href="{% url 'edit-profile' pk=profile.user.pk %}" class="btn btn-primary">Edit Profile</a>
-                        <a href="{% url 'delete-profile' pk=profile.user.pk %}" class="btn btn-danger">Delete Profile</a>
+                <div class="card-body card-soft-bg">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="mb-2"><span class="fw-semibold text-primary">Name:</span>
+                                {{ profile.first_name|default:"-" }} {{ profile.last_name|default:"-" }}</p>
+                            <p class="mb-2"><span class="fw-semibold text-primary">Email:</span>
+                                {{ profile.user.email|default:"-" }}</p>
+                            <p class="mb-2"><span class="fw-semibold text-primary">Date of Birth:</span>
+                                {{ profile.date_of_birth|default:"Not specified" }}</p>
+                            <p class="mb-2"><span class="fw-semibold text-primary">Gender:</span>
+                                {{ profile.gender|default:"Not specified" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-2 fw-semibold text-primary">Bio:</p>
+                            <div class="mb-2">
+                                <span class="badge badge-soft bg-light text-dark px-3 py-2 rounded-pill" style="font-size: 1rem;">
+                                    {{ profile.bio|default:"No bio available" }}
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                {% endif %}
+                    {% if user.id == profile.user.id %}
+                        <div class="d-flex gap-2 justify-content-end mt-3">
+                            <a href="{% url 'edit-profile' pk=profile.user.pk %}" class="btn btn-gradient rounded-pill px-4 fw-semibold">
+                                <i class="bi bi-pencil"></i> Edit Profile
+                            </a>
+                            <a href="{% url 'delete-profile' pk=profile.user.pk %}" class="btn btn-outline-danger rounded-pill px-4 fw-semibold">
+                                <i class="bi bi-trash"></i> Delete Profile
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
