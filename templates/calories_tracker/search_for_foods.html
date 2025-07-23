@@ -4,50 +4,91 @@
 {% block title %}Food Search - Calories Tracker{% endblock %}
 
 {% block content %}
-<main>
-    <form method="get" class="mb-4">
-        <h1 class="mb-3">Search for Food</h1>
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+<div class="container mt-4">
+    <!-- Prominent Search Heading -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-8">
+            <h1 class="fw-bold text-center mb-0" style="letter-spacing: 1px;">
+                <span class="badge badge-gradient py-4 px-5 d-inline-block" style="font-size: 2rem; box-shadow: 0 2px 8px rgba(106, 17, 203, 0.12);">
+                    <i class="bi bi-search"></i> Search for Food
+                </span>
+            </h1>
+        </div>
+    </div>
 
+    <!-- Search Card -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-8">
+            <div class="card shadow border-0 rounded-xl">
+                <div class="card-body d-flex align-items-center flex-wrap" style="gap: 1rem;">
+                    <form method="get" class="d-flex align-items-center flex-wrap w-100" style="gap: 1rem;">
+                        <label for="id_query" class="form-label mb-2 fw-semibold" style="font-size: 1.1rem; color: #4361ee;">
+                            <i class="bi bi-search"></i> What food did you eat?
+                        </label>
+                        <div class="flex-grow-1">
+                            {{ form.query }}
+                        </div>
+                        <button type="submit" class="btn btn-gradient px-4 py-2 rounded-pill fw-semibold">
+                            <i class="bi bi-arrow-right-circle"></i> Search
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Message -->
     {% if error_message %}
-        <div class="alert alert-warning">
-            {{ error_message }}
-            {% if debug_info %}
-                <hr>
-                <small class="text-muted">Debug Info: {{ debug_info }}</small>
-            {% endif %}
+        <div class="row justify-content-center mb-3">
+            <div class="col-lg-8">
+                <div class="alert alert-warning shadow-sm border-0 rounded-xl">
+                    {{ error_message }}
+                    {% if debug_info %}
+                        <hr>
+                        <small class="text-muted">Debug Info: {{ debug_info }}</small>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     {% endif %}
 
+    <!-- Search Results -->
     {% if foods %}
-        <div class="search-results mt-4">
-            <h3>Search Results</h3>
-            <div class="row">
-                {% for food in foods %}
-                    <div class="col-md-6 mb-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ food.food_name }}</h5>
-                                <p class="card-text">{{ food.food_description }}</p>
+        <div class="row justify-content-center mb-3">
+            <div class="col-lg-8">
+                <h2 class="mb-0 fw-bold text-center" style="letter-spacing: 1px;">
+                    <span class="badge badge-gradient py-3 px-4" style="font-size: 1.3rem;">
+                        <i class="bi bi-list-ul"></i> Search Results
+                    </span>
+                </h2>
+                <div class="d-flex flex-column gap-3 mt-4">
+                    {% for food in foods %}
+                        <div class="card shadow-sm border-0 rounded-xl">
+                            <div class="card-gradient-header d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-egg-fried fs-4 text-white"></i>
+                                    <h5 class="mb-0 text-white">{{ food.food_name }}</h5>
+                                </div>
+                            </div>
+                            <div class="card-body card-soft-bg">
+                                <p class="mb-2 text-muted small">{{ food.food_description }}</p>
                                 {% if user.is_authenticated %}
                                     <a href="{% url 'add_food' %}?food_name={{ food.food_name|urlencode }}&food_description={{ food.food_description|urlencode }}"
-                                       class="btn btn-primary">
-                                        Add This Food
+                                       class="btn btn-gradient btn-sm rounded-pill px-4">
+                                        <i class="bi bi-plus-circle"></i> Add This Food
                                     </a>
                                 {% else %}
                                     <a href="{% url 'login' %}?next={% url 'add_food' %}?food_name={{ food.food_name|urlencode }}&food_description={{ food.food_description|urlencode }}"
-                                       class="btn btn-primary">
-                                        Add This Food
+                                       class="btn btn-gradient btn-sm rounded-pill px-4">
+                                        <i class="bi bi-box-arrow-in-right"></i> Login to Add
                                     </a>
                                 {% endif %}
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
     {% endif %}
-</main>
+</div>
 {% endblock %}
