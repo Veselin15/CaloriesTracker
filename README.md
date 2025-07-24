@@ -2,7 +2,6 @@
 
 [![Django](https://img.shields.io/badge/Django-5.2.1-green?logo=django&logoColor=white)](https://www.djangoproject.com/)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Live Site](https://img.shields.io/badge/Live%20Demo-Online-brightgreen?logo=firefox-browser)](https://caloriestracker-yy3h.onrender.com)
 
 ---
